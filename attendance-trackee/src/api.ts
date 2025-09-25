@@ -26,7 +26,8 @@ export const globalAdminAPI = {
       username,
       password
     });
-    return response.data;
+    console.log(response);
+    return response; // Return full response object, not just response.data
   },
 
   logout: async () => {
@@ -83,7 +84,7 @@ export const verticalLeadAPI = {
       roll_no,
       password
     });
-    return response.data;
+    return response; // Return full response object, not just response.data
   },
 
   logout: async () => {
@@ -104,7 +105,7 @@ export const verticalLeadAPI = {
 
   getMembers: async () => {
     const response = await api.get('/verticalleads/members');
-    return response.data;
+    return response.data; // Returns { message, count, members }
   },
 
   getMemberById: async (roll_no: string) => {
@@ -136,12 +137,12 @@ export const verticalLeadAPI = {
     m_o_m: string;
   }) => {
     const response = await api.post('/verticalleads/meetings', meetingData);
-    return response.data;
+    return response.data; // Returns { message, meeting }
   },
 
   getMeetings: async () => {
     const response = await api.get('/verticalleads/meetings');
-    return response.data;
+    return response.data; // Returns { message, count, meetings }
   },
 
   getMeetingById: async (meetingId: string) => {
@@ -169,7 +170,7 @@ export const verticalLeadAPI = {
   // Attendance management
   getMembersAttendance: async (meetingId: string) => {
     const response = await api.get(`/verticalleads/meetings/${meetingId}/members-attendance`);
-    return response.data;
+    return response.data; // Returns { message, meeting, members, count }
   },
 
   updateAttendance: async (
@@ -179,7 +180,7 @@ export const verticalLeadAPI = {
     const response = await api.put(`/verticalleads/meetings/${meetingId}/attendance`, {
       memberAttendance
     });
-    return response.data;
+    return response.data; // Returns { message, modified, upserted }
   }
 };
 
