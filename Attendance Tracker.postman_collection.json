@@ -107,14 +107,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseURL}}/auth/verticalleads/signup",
+									"raw": "{{baseURL}}/globaladmin/verticalleads/create",
 									"host": [
 										"{{baseURL}}"
 									],
 									"path": [
-										"auth",
+										"globaladmin",
 										"verticalleads",
-										"signup"
+										"create"
 									]
 								}
 							},
@@ -190,10 +190,6 @@
 							"request": {
 								"method": "DELETE",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Updated Name\",\r\n    \"rollno\": \"23n228\",      \r\n    \"year\": 4,                     \r\n    \"department\": \"New Department\"\r\n}"
-								},
 								"url": {
 									"raw": "{{baseURL}}/globaladmin/verticalleads/23n228",
 									"host": [
@@ -380,6 +376,56 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "add members from xlsx",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/strea/Downloads/tech-mermbers.xlsx"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseURL}}/verticalleads/members/upload-xlsx",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"verticalleads",
+										"members",
+										"upload-xlsx"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Attendance Summary for All Members in Vertical",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/verticalleads/members/attendance-summary/all",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"verticalleads",
+										"members",
+										"attendance-summary",
+										"all"
+									]
+								},
+								"description": "Get attendance summary for all members in the vertical (vertical lead only). Returns attended, not attended, total meetings, and percentage for each member."
+							},
+							"response": []
 						}
 					]
 				},
@@ -393,7 +439,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"meeting_name\": \"Intrams Discussion\",\r\n    \"date\":\"09-14-2025\",\r\n    \"m_o_m\":\"Assigned works tonew recruits for intrams\"\r\n}",
+									"raw": "{\r\n    \"meeting_name\": \"Intrams Discussion\",\r\n    \"date\":\"09-14-2025\",\r\n    \"m_o_m\":\"Assigned works to new recruits for intrams\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -551,6 +597,26 @@
 					]
 				}
 			]
+		},
+		{
+				"name": "Get Attendance Summary for All Verticals (Global Admin)",
+				"request": {
+					"method": "GET",
+					"header": [],
+					"url": {
+						"raw": "{{baseURL}}/globaladmin/attendance-summary/all",
+						"host": [
+							"{{baseURL}}"
+						],
+						"path": [
+							"globaladmin",
+							"attendance-summary",
+							"all"
+						]
+					},
+					"description": "Get attendance summary for all members in all verticals (global admin only). Returns attended, not attended, total meetings, and percentage for each member."
+				},
+				"response": []
 		}
 	],
 	"variable": [
