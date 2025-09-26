@@ -79,6 +79,12 @@ export const globalAdminAPI = {
 
 // Vertical Lead APIs
 export const verticalLeadAPI = {
+  uploadMembersXlsx: async (formData: FormData) => {
+    const response = await api.post('/verticalleads/members/upload-xlsx', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
   login: async (roll_no: string, password: string) => {
     const response = await api.post('/auth/verticalleads/login', {
       roll_no,

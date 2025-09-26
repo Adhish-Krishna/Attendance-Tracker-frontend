@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import VerticalHeadDashboard from './pages/VerticalHeadDashboard';
+import AddMembersPage from './pages/AddMembersPage';
 import GlobalAdminDashboard from './pages/GlobalAdminDashboard';
 import MeetingAttendancePage from './pages/MeetingAttendancePage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
@@ -42,6 +43,14 @@ function App() {
                   <VerticalHeadDashboard />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/members/add"
+              element={
+                <ProtectedRoute allowedRoles={['vertical_head']}>
+                  <AddMembersPage />
+                </ProtectedRoute>
+              }
             />
             <Route 
               path="/meeting/:meetingId/attendance" 
