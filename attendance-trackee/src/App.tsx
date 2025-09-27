@@ -9,6 +9,8 @@ import GlobalAdminDashboard from './pages/GlobalAdminDashboard';
 import MeetingAttendancePage from './pages/MeetingAttendancePage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import VerticalHeadAttendance from './pages/VerticalHeadAttendance';
+import GlobalAdminAllAttendancePage from './pages/GlobalAdminAllAttendancePage';
+
 import './App.css';
 
 // Home redirect component
@@ -79,7 +81,8 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            
+            <Route path="/global-admin/all-attendance" element={<GlobalAdminAllAttendancePage />} />
+
             {/* Default route - redirect to appropriate dashboard */}
             <Route path="/" element={<HomeRedirect />} />
             
