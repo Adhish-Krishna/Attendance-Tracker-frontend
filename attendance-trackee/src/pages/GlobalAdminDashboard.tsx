@@ -278,9 +278,9 @@ const GlobalAdminDashboard: React.FC = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* View All Attendance Card - Single card now */}
+          {/* View All Attendance Card (now navigates to a page) */}
           <button
-            onClick={handleShowAttendance}
+            onClick={() => navigate('/global-admin/all-attendance')}
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 text-left group"
           >
             <div className="flex items-center mb-3">
@@ -293,6 +293,8 @@ const GlobalAdminDashboard: React.FC = () => {
             </div>
             <p className="text-sm text-gray-600">View attendance statistics for all verticals</p>
           </button>
+
+       
         </div>
 
         {/* System Analytics */}
@@ -354,7 +356,10 @@ const GlobalAdminDashboard: React.FC = () => {
                               {member.vertical}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{member.attended}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {member.attended}
+                            <span className="ml-2 text-xs text-gray-500">({member.attended}/{member.total_meetings})</span>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{member.total_meetings}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

@@ -1,0 +1,192 @@
+
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { globalAdminAPI } from '../api';
+import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+
+
+const GlobalAdminAllAttendancePage: React.FC = () => {
+  const [attendanceData, setAttendanceData] = useState<any[]>([]);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const navigate = useNavigate();
+  const [verticalFilter, setVerticalFilter] = useState<string>('');
+  const [yearFilter, setYearFilter] = useState<string>('');
+
+  useEffect(() => {
+    const fetchAttendanceSummary = async () => {
+      setAttendanceLoading(true);
+      try {
+        const data = await globalAdminAPI.getAllVerticalsAttendanceSummary();
+        setAttendanceData(data.attendance_summary || []);
+      } catch (err) {
+        setAttendanceData([]);
+      } finally {
+        setAttendanceLoading(false);
+      }
+    };
+    fetchAttendanceSummary();
+  }, []);
+
+  // Get unique verticals and years for filters
+  const verticals = Array.from(new Set(attendanceData.map((m) => m.vertical).filter(Boolean)));
+  const years = Array.from(new Set(attendanceData.map((m) => m.year).filter(Boolean))).sort();
+
+  // Filter and sort logic
+  const filteredAttendance = attendanceData.filter((m) => {
+    const verticalMatch = verticalFilter ? m.vertical === verticalFilter : true;
+    const yearMatch = yearFilter ? String(m.year) === yearFilter : true;
+    return verticalMatch && yearMatch;
+  });
+
+  const sortedAttendance = [...filteredAttendance].sort((a, b) => {
+    const percentA = typeof a.percentage === 'number' ? a.percentage : 0;
+    const percentB = typeof b.percentage === 'number' ? b.percentage : 0;
+    if (sortOrder === 'asc') {
+      return percentA - percentB;
+    } else {
+      return percentB - percentA;
+    }
+  });
+
+  // Color chip for percentage
+  const getAttendanceChip = (percentage: number) => {
+    if (percentage === undefined || percentage === null || isNaN(percentage)) {
+      return (
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500 border border-gray-300">N/A</span>
+      );
+    } else if (percentage >= 80) {
+      return (
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">{percentage.toFixed(1)}%</span>
+      );
+    } else if (percentage >= 60) {
+      return (
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">{percentage.toFixed(1)}%</span>
+      );
+    } else {
+      return (
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">{percentage.toFixed(1)}%</span>
+      );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-0 sm:p-6 text-left">
+          {/* Card header with title, back button, and filters on right */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-4 border-b border-gray-100">
+            <div className="flex items-center mb-2 sm:mb-0 gap-3">
+              <button
+                onClick={() => navigate('/global-admin/dashboard')}
+                className="text-gray-600 hover:text-gray-900 transition-colors p-2 -ml-2 rounded-lg hover:bg-gray-100"
+                aria-label="Back to Dashboard"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+              <h1 className="ml-2 text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">All Members Attendance</h1>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+              <div className="flex gap-2 items-center bg-gray-50 border border-blue-200 rounded-lg px-2 py-1.5">
+                <label className="text-xs sm:text-sm font-semibold text-blue-700">Vertical</label>
+                <select
+                  value={verticalFilter}
+                  onChange={e => setVerticalFilter(e.target.value)}
+                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  style={{ minWidth: 70 }}
+                >
+                  <option value="">All</option>
+                  {verticals.map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
+                <label className="text-xs sm:text-sm font-semibold text-blue-700 ml-1">Year</label>
+                <select
+                  value={yearFilter}
+                  onChange={e => setYearFilter(e.target.value)}
+                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  style={{ minWidth: 50 }}
+                >
+                  <option value="">All</option>
+                  {years.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-50 border border-blue-200 rounded-lg px-2 py-1.5">
+                <span className="font-semibold text-xs sm:text-sm text-blue-700">Sort by</span>
+                <select
+                  value={sortOrder}
+                  onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
+                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  style={{ minWidth: 80 }}
+                >
+                  <option value="desc">High to Low</option>
+                  <option value="asc">Low to High</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="px-4 pt-4 pb-2 flex items-center">
+            <span className="inline-block rounded-xl bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 text-blue-900 font-bold text-base sm:text-lg px-6 py-3 shadow border border-blue-200 tracking-wide">
+              {
+                (() => {
+                  // Helper to get ordinal suffix
+                  const getOrdinal = (n: number) => {
+                    const s = ["th", "st", "nd", "rd"], v = n % 100;
+                    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+                  };
+                  const yearText = yearFilter ? `${getOrdinal(Number(yearFilter))} year` : '';
+                  if (verticalFilter && yearFilter) return `Attendance statistics for ${verticalFilter} (${yearText})`;
+                  if (verticalFilter && !yearFilter) return `Attendance statistics for ${verticalFilter}`;
+                  if (!verticalFilter && yearFilter) return `Attendance statistics for all verticals (${yearText})`;
+                  return 'Attendance statistics for all verticals';
+                })()
+              }
+            </span>
+          </div>
+          <div className="overflow-x-auto px-2 pb-2">
+            {attendanceLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : (
+              <Paper elevation={2} sx={{ width: '100%', overflowX: 'auto', boxShadow: { xs: 0, sm: 2 }, borderRadius: { xs: 1, sm: 2 } }}>
+                <Table sx={{ minWidth: 400, width: '100%', tableLayout: 'auto' }}>
+                  <TableHead sx={{ bgcolor: 'primary.main' }}>
+                    <TableRow>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Name</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Roll No</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Vertical</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Meetings Attended</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Attendance %</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedAttendance.map((member, index) => (
+                      <TableRow key={index} hover sx={{ '& td': { fontSize: { xs: 12, sm: 15 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } } }}>
+                        <TableCell sx={{ fontWeight: 'medium' }}>{member.name}</TableCell>
+                        <TableCell>{member.roll_no}</TableCell>
+                        <TableCell>
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {member.vertical}
+                          </span>
+                        </TableCell>
+                        <TableCell>{member.attended} / {typeof member.total_meetings === 'number' ? member.total_meetings : (typeof member.attended === 'number' && typeof member.notAttended === 'number' ? member.attended + member.notAttended : '-')}</TableCell>
+                        <TableCell>{getAttendanceChip(member.percentage)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Paper>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default GlobalAdminAllAttendancePage;
