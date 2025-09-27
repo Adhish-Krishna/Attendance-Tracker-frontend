@@ -83,11 +83,9 @@ const GlobalAdminDashboard: React.FC = () => {
     setLoading(true);
     setError(''); // Clear any existing errors
     try {
-      console.log('🔄 Fetching vertical leads...'); // Debug log
+      
       const response = await globalAdminAPI.getVerticalLeads();
-      console.log('📥 Raw API response:', response); // Debug log
-      console.log('📥 Response type:', typeof response);
-      console.log('📥 Response keys:', Object.keys(response || {}));
+      
       
       // Handle different response formats - check all possible structures
       let leadsData = [];
@@ -107,8 +105,7 @@ const GlobalAdminDashboard: React.FC = () => {
         leadsData = [];
       }
       
-      console.log('✅ Processed leads data:', leadsData);
-      console.log('📊 Number of leads:', leadsData.length);
+   
       
       setVerticalLeads(leadsData);
 
@@ -120,7 +117,7 @@ const GlobalAdminDashboard: React.FC = () => {
         avgAttendance: 85.2,
       });
       
-      console.log('📈 Analytics updated:', { totalVerticals });
+      
     } catch (err: any) {
       console.error('❌ Error fetching leads and analytics:', err);
       console.error('❌ Error details:', {
@@ -182,7 +179,7 @@ const GlobalAdminDashboard: React.FC = () => {
       
       setShowCreateForm(false);
       resetForm();
-      console.log('🔄 Refreshing leads list after create/update...');
+     
       await fetchLeadsAndAnalytics(); // Refresh the list
     } catch (err: any) {
       console.error('❌ Error creating/updating lead:', err);
@@ -196,10 +193,10 @@ const GlobalAdminDashboard: React.FC = () => {
   const handleDeleteLead = async (rollNo: string) => {
     if (window.confirm('Are you sure you want to delete this vertical lead?')) {
       try {
-        console.log('🗑️ Deleting lead with roll_no:', rollNo);
+        
         await globalAdminAPI.deleteVerticalLead(rollNo);
         setSuccess('Vertical lead deleted successfully!');
-        console.log('🔄 Refreshing leads list after delete...');
+      
         await fetchLeadsAndAnalytics(); // Refresh the list
       } catch (err: any) {
         console.error('❌ Error deleting lead:', err);

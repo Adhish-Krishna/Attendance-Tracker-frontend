@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+  // Removed debug error
       return false;
     } finally {
       setIsLoading(false);
@@ -90,7 +90,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await verticalLeadAPI.logout();
       }
     } catch (error) {
-      console.error('Logout error:', error);
+  // Removed debug error
     } finally {
   setUser(null);
   localStorage.removeItem('authUser');
