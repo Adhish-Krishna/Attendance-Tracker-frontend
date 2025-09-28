@@ -1,16 +1,22 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "attendance-trackee/dist",
+  "framework": "vite",
+  "rewrites": [
     {
-      "src": "attendance-trackee/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "attendance-trackee/dist",
-        "buildCommand": "npm run vercel-build"
-      }
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/attendance-trackee/dist/index.html" }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
+        }
+      ]
+    }
   ]
 }
