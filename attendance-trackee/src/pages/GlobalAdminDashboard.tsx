@@ -42,8 +42,9 @@ const GlobalAdminDashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // Removed unused showAttendance state
-  // Removed unused attendanceData and attendanceLoading state
+  // Removed unused attendanceSummary state
+  // Grouped and averaged attendance by vertical
+  const [verticalAverages, setVerticalAverages] = useState<{ vertical: string, percentage: number }[]>([]);
 
   useEffect(() => {
     fetchLeadsAndAnalytics();
@@ -54,17 +55,35 @@ const GlobalAdminDashboard: React.FC = () => {
   const fetchAttendanceAnalytics = async () => {
     try {
       const data = await globalAdminAPI.getAllVerticalsAttendanceSummary();
-      const attendanceSummary = data.attendance_summary || [];
+      const summary = data.attendance_summary || [];
+  // Removed setAttendanceSummary as it's not used
+
+      // Group by vertical and calculate average percentage for each
+      const verticalMap: Record<string, { total: number, count: number }> = {};
+      summary.forEach((item: any) => {
+        const v = item.vertical || 'N/A';
+        if (!verticalMap[v]) verticalMap[v] = { total: 0, count: 0 };
+        if (typeof item.percentage === 'number') {
+          verticalMap[v].total += item.percentage;
+          verticalMap[v].count += 1;
+        }
+      });
+      const averages = Object.entries(verticalMap).map(([vertical, { total, count }]) => ({
+        vertical,
+        percentage: count > 0 ? Math.round(total / count) : 0
+      }));
+      setVerticalAverages(averages);
+
       // Calculate total members (unique roll_no), total verticals, avg attendance
-      const uniqueMembers = new Set(attendanceSummary.map((m: any) => m.roll_no));
-      const uniqueVerticals = new Set(attendanceSummary.map((m: any) => m.vertical));
-      const avgAttendance = attendanceSummary.length > 0
-        ? (attendanceSummary.reduce((acc: number, m: any) => acc + (typeof m.percentage === 'number' ? m.percentage : 0), 0) / attendanceSummary.length)
+      const uniqueMembers = new Set(summary.map((m: any) => m.roll_no));
+      const uniqueVerticals = new Set(summary.map((m: any) => m.vertical));
+      const avgAttendance = summary.length > 0
+        ? (summary.reduce((acc: number, m: any) => acc + (typeof m.percentage === 'number' ? m.percentage : 0), 0) / summary.length)
         : 0;
       setAnalytics({
         totalVerticals: uniqueVerticals.size,
         totalMembers: uniqueMembers.size,
-  avgAttendance: avgAttendance ? Number(avgAttendance.toFixed(1)) : 0,
+        avgAttendance: avgAttendance ? Number(avgAttendance.toFixed(1)) : 0,
       });
     } catch (err) {
       // fallback: do not update analytics
@@ -294,6 +313,7 @@ const GlobalAdminDashboard: React.FC = () => {
        
         </div>
 
+
         {/* System Analytics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
@@ -309,6 +329,39 @@ const GlobalAdminDashboard: React.FC = () => {
             <div className="text-3xl font-bold text-gray-900">{analytics.avgAttendance}</div>
           </div>
         </div>
+
+        {/* Average Attendance by Vertical Progress Circles */}
+        {verticalAverages.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Average Attendance by Vertical</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {verticalAverages.map((vertical, idx) => (
+                <div key={vertical.vertical || idx} className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 flex flex-col items-center">
+                  <div className="mb-2 text-lg font-semibold text-gray-700">{vertical.vertical || 'N/A'}</div>
+                  <svg width="140" height="140" viewBox="0 0 70 70" className="mb-2">
+                    <circle cx="35" cy="35" r="32" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+                    <circle
+                      cx="35"
+                      cy="35"
+                      r="32"
+                      fill="none"
+                      stroke="#2563eb"
+                      strokeWidth="6"
+                      strokeDasharray={2 * Math.PI * 32}
+                      strokeDashoffset={2 * Math.PI * 32 * (1 - (vertical.percentage || 0) / 100)}
+                      strokeLinecap="round"
+                      style={{ transition: 'stroke-dashoffset 0.5s' }}
+                    />
+                    <text x="50%" y="50%" textAnchor="middle" dy=".3em" fontSize="0.9em" fill="#111" fontWeight="bold">
+                      {vertical.percentage != null ? `${vertical.percentage}%` : 'N/A'}
+                    </text>
+                  </svg>
+                  <div className="text-sm text-gray-500">Attendance</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
 
 
