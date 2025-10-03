@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { globalAdminAPI } from '../api';
 import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 
 const GlobalAdminAllAttendancePage: React.FC = () => {
@@ -53,48 +54,57 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
   const getAttendanceChip = (percentage: number) => {
     if (percentage === undefined || percentage === null || isNaN(percentage)) {
       return (
-        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500 border border-gray-300">N/A</span>
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 dark:bg-slate-700/40 text-gray-500 dark:text-gray-300 border border-gray-300 dark:border-slate-600">N/A</span>
       );
     } else if (percentage >= 80) {
       return (
-        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">{percentage.toFixed(1)}%</span>
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100/80 dark:bg-emerald-600/30 text-green-800 dark:text-emerald-200">{percentage.toFixed(1)}%</span>
       );
     } else if (percentage >= 60) {
       return (
-        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">{percentage.toFixed(1)}%</span>
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100/80 dark:bg-amber-500/30 text-yellow-800 dark:text-amber-200">{percentage.toFixed(1)}%</span>
       );
     } else {
       return (
-        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">{percentage.toFixed(1)}%</span>
+        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100/80 dark:bg-rose-600/30 text-red-800 dark:text-rose-200">{percentage.toFixed(1)}%</span>
       );
     }
   };
 
+  const headerCellSx = (theme: Theme) => ({
+    color: '#f8fafc',
+    fontWeight: theme.palette.mode === 'dark' ? 600 : 500,
+    whiteSpace: 'nowrap',
+    fontSize: { xs: 12, sm: 16 },
+    px: { xs: 1, sm: 2 },
+    py: { xs: 1, sm: 2 },
+  });
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-0 sm:p-6 text-left">
+        <div className="bg-white/80 dark:bg-slate-900/80 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-0 sm:p-6 text-left backdrop-blur transition-colors">
           {/* Card header with title, back button, and filters on right */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-4 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-4 border-b border-gray-100 dark:border-slate-800/80">
             <div className="flex items-center mb-2 sm:mb-0 gap-3">
               <button
                 onClick={() => navigate('/global-admin/dashboard')}
-                className="text-gray-600 hover:text-gray-900 transition-colors p-2 -ml-2 rounded-lg hover:bg-gray-100"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 -ml-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800/60"
                 aria-label="Back to Dashboard"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
               </button>
-              <h1 className="ml-2 text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">All Members Attendance</h1>
+              <h1 className="ml-2 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">All Members Attendance</h1>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-              <div className="flex gap-2 items-center bg-gray-50 border border-blue-200 rounded-lg px-2 py-1.5">
-                <label className="text-xs sm:text-sm font-semibold text-blue-700">Vertical</label>
+              <div className="flex gap-2 items-center bg-gray-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-400/50 rounded-lg px-2 py-1.5">
+                <label className="text-xs sm:text-sm font-semibold text-blue-700 dark:text-blue-200">Vertical</label>
                 <select
                   value={verticalFilter}
                   onChange={e => setVerticalFilter(e.target.value)}
-                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  className="border border-blue-400 dark:border-blue-500 rounded px-2 py-1 text-blue-700 dark:text-blue-200 font-semibold text-xs sm:text-sm focus:outline-none bg-white dark:bg-slate-900"
                   style={{ minWidth: 70 }}
                 >
                   <option value="">All</option>
@@ -102,11 +112,11 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
                     <option key={v} value={v}>{v}</option>
                   ))}
                 </select>
-                <label className="text-xs sm:text-sm font-semibold text-blue-700 ml-1">Year</label>
+                <label className="text-xs sm:text-sm font-semibold text-blue-700 dark:text-blue-200 ml-1">Year</label>
                 <select
                   value={yearFilter}
                   onChange={e => setYearFilter(e.target.value)}
-                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  className="border border-blue-400 dark:border-blue-500 rounded px-2 py-1 text-blue-700 dark:text-blue-200 font-semibold text-xs sm:text-sm focus:outline-none bg-white dark:bg-slate-900"
                   style={{ minWidth: 50 }}
                 >
                   <option value="">All</option>
@@ -115,12 +125,12 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex items-center gap-2 bg-gray-50 border border-blue-200 rounded-lg px-2 py-1.5">
-                <span className="font-semibold text-xs sm:text-sm text-blue-700">Sort by</span>
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-400/50 rounded-lg px-2 py-1.5">
+                <span className="font-semibold text-xs sm:text-sm text-blue-700 dark:text-blue-200">Sort by</span>
                 <select
                   value={sortOrder}
                   onChange={e => setSortOrder(e.target.value as 'asc' | 'desc')}
-                  className="border border-blue-400 rounded px-2 py-1 text-blue-700 font-semibold text-xs sm:text-sm focus:outline-none"
+                  className="border border-blue-400 dark:border-blue-500 rounded px-2 py-1 text-blue-700 dark:text-blue-200 font-semibold text-xs sm:text-sm focus:outline-none bg-white dark:bg-slate-900"
                   style={{ minWidth: 80 }}
                 >
                   <option value="desc">High to Low</option>
@@ -130,7 +140,7 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
             </div>
           </div>
           <div className="px-4 pt-4 pb-2 flex items-center">
-            <span className="inline-block rounded-xl bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 text-blue-900 font-bold text-base sm:text-lg px-6 py-3 shadow border border-blue-200 tracking-wide">
+            <span className="inline-block rounded-xl bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 dark:from-blue-900/40 dark:via-blue-800/20 dark:to-blue-900/40 text-blue-900 dark:text-blue-100 font-bold text-base sm:text-lg px-6 py-3 shadow border border-blue-200 dark:border-blue-500/40 tracking-wide transition-colors">
               {
                 (() => {
                   // Helper to get ordinal suffix
@@ -153,24 +163,55 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
             ) : (
-              <Paper elevation={2} sx={{ width: '100%', overflowX: 'auto', boxShadow: { xs: 0, sm: 2 }, borderRadius: { xs: 1, sm: 2 } }}>
-                <Table sx={{ minWidth: 400, width: '100%', tableLayout: 'auto' }}>
-                  <TableHead sx={{ bgcolor: 'primary.main' }}>
+              <Paper
+                elevation={2}
+                className="attendance-table !bg-white/90 dark:!bg-slate-900/80 !text-inherit transition-colors"
+                sx={{ width: '100%', overflowX: 'auto', boxShadow: { xs: 0, sm: 2 }, borderRadius: { xs: 1, sm: 2 } }}
+              >
+                <Table
+                  sx={{
+                    minWidth: 400,
+                    width: '100%',
+                    tableLayout: 'auto',
+                    '& .MuiTableCell-root': {
+                      borderBottomColor: '#e2e8f0',
+                    },
+                  }}
+                  className="[&_td]:!text-slate-900 [&_.MuiTableCell-head]:!text-white dark:[&_td]:!text-white dark:[&_td]:!border-slate-700/60 dark:[&_th]:!border-slate-700/60 dark:[&_tr:hover_.MuiTableCell-root]:!text-white"
+                >
+                  <TableHead
+                    sx={{
+                      backgroundColor: '#2563eb',
+                      '& .MuiTableCell-root': {
+                        color: '#f8fafc',
+                        borderBottom: 'none',
+                      },
+                    }}
+                    className="dark:!bg-slate-800/95"
+                  >
                     <TableRow>
-                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Name</TableCell>
-                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Roll No</TableCell>
-                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Vertical</TableCell>
-                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Meetings Attended</TableCell>
-                      <TableCell sx={{ color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 12, sm: 16 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>Attendance %</TableCell>
+                      <TableCell sx={headerCellSx}>Name</TableCell>
+                      <TableCell sx={headerCellSx}>Roll No</TableCell>
+                      <TableCell sx={headerCellSx}>Vertical</TableCell>
+                      <TableCell sx={headerCellSx}>Meetings Attended</TableCell>
+                      <TableCell sx={headerCellSx}>Attendance %</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {sortedAttendance.map((member, index) => (
-                      <TableRow key={index} hover sx={{ '& td': { fontSize: { xs: 12, sm: 15 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } } }}>
-                        <TableCell sx={{ fontWeight: 'medium' }}>{member.name}</TableCell>
+                      <TableRow
+                        key={index}
+                        hover
+                        sx={{
+                          '& td': { fontSize: { xs: 12, sm: 15 }, px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } },
+                          '&:hover': { backgroundColor: 'rgba(59,130,246,0.08)' },
+                        }}
+                        className="dark:hover:!bg-slate-800/60"
+                      >
+                        <TableCell>{member.name}</TableCell>
                         <TableCell>{member.roll_no}</TableCell>
                         <TableCell>
-                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100/80 dark:bg-blue-600/30 text-blue-800 dark:text-blue-200">
                             {member.vertical}
                           </span>
                         </TableCell>

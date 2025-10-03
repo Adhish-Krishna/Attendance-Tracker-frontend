@@ -75,26 +75,26 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
   };
 
   return (
-  <div className="bg-white rounded-lg shadow-md border border-gray-200 p-8 mb-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Add Members</h2>
+  <div className="bg-white/90 dark:bg-slate-900/80 rounded-lg shadow-md shadow-blue-500/5 dark:shadow-blue-900/30 border border-gray-200 dark:border-slate-800 p-8 mb-8 transition-colors">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add Members</h2>
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[1.15fr_1fr] gap-8">
         {/* Individual Add Member Form */}
-  <form onSubmit={handleAddMember} className="space-y-5 bg-gray-50 rounded-lg p-6 border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-semibold text-primary-700 mb-2">Add Single Member</h3>
+  <form onSubmit={handleAddMember} className="space-y-5 bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-100 dark:border-slate-800 shadow-sm transition-colors">
+          <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-2">Add Single Member</h3>
           <div className="grid grid-cols-1 gap-4">
-            <input type="text" name="name" value={form.name} onChange={handleInputChange} placeholder="Name" className="px-3 py-2 border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
-            <input type="text" name="roll_no" value={form.roll_no} onChange={handleInputChange} placeholder="Roll No" className="px-3 py-2 border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
-            <input type="number" name="year" value={form.year} onChange={handleInputChange} placeholder="Year" className="px-3 py-2 border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500" min={1} max={5} required disabled={loading} />
-            <input type="text" name="department" value={form.department} onChange={handleInputChange} placeholder="Department" className="px-3 py-2 border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
+            <input type="text" name="name" value={form.name} onChange={handleInputChange} placeholder="Name" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
+            <input type="text" name="roll_no" value={form.roll_no} onChange={handleInputChange} placeholder="Roll No" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
+            <input type="number" name="year" value={form.year} onChange={handleInputChange} placeholder="Year" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" min={1} max={5} required disabled={loading} />
+            <input type="text" name="department" value={form.department} onChange={handleInputChange} placeholder="Department" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
           </div>
-          <button type="submit" className="w-full px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:bg-gray-400 transition-colors duration-200 font-medium" disabled={loading}>Add Member</button>
+          <button type="submit" className="w-full px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:bg-gray-400 dark:disabled:bg-slate-700 transition-colors duration-200 font-medium" disabled={loading}>Add Member</button>
         </form>
         {/* Bulk Upload Form */}
-  <form onSubmit={handleUploadXlsx} className="space-y-5 bg-gray-50 rounded-lg p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
+  <form onSubmit={handleUploadXlsx} className="space-y-5 bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start sm:gap-6">
             <div className="sm:max-w-lg">
-              <h3 className="text-lg font-semibold text-primary-700 leading-tight">Bulk Upload via Excel</h3>
-              <p className="mt-1 text-sm text-gray-600 leading-relaxed sm:pr-4">
+              <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 leading-tight">Bulk Upload via Excel</h3>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed sm:pr-4">
                 Download the template, fill in member details, and upload the completed file to add everyone in one go.
               </p>
             </div>
@@ -102,7 +102,7 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
               <button
                 type="button"
                 onClick={onDownloadTemplate}
-                className="inline-flex items-center justify-center px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200 min-h-[40px] sm:self-start"
+                className="inline-flex items-center justify-center px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 focus:ring-offset-gray-100 dark:focus:ring-offset-slate-900 transition-colors duration-200 min-h-[40px] sm:self-start"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
@@ -112,9 +112,9 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">Excel file (.xlsx)</label>
+            <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Excel file (.xlsx)</label>
             <div
-              className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors duration-200 ${file ? 'border-primary-600 bg-primary-50' : 'border-gray-300 bg-white hover:bg-gray-50'}`}
+              className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors duration-200 ${file ? 'border-primary-600 bg-primary-50 dark:bg-primary-500/20' : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800'}`}
               onClick={() => !loading && document.getElementById('file-upload')?.click()}
               onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
               onDrop={e => {
@@ -137,18 +137,18 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
               <svg className="w-8 h-8 text-primary-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-5 4l-4-4m0 0l4-4m-4 4h12" />
               </svg>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-gray-700 dark:text-gray-200">
                 {file ? file.name : 'Click or drag and drop to select an Excel file'}
               </span>
             </div>
           </div>
-          <button type="submit" className="w-full px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:bg-gray-400 transition-colors duration-200 font-medium" disabled={loading}>Upload Excel</button>
+          <button type="submit" className="w-full px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:bg-gray-400 dark:disabled:bg-slate-700 transition-colors duration-200 font-medium" disabled={loading}>Upload Excel</button>
         </form>
       </div>
       {(error || success) && (
         <div className="mt-6">
-          {error && <div className="text-red-600 text-center font-medium bg-red-50 border border-red-200 rounded-md p-3 mb-2">{error}</div>}
-          {success && <div className="text-green-600 text-center font-medium bg-green-50 border border-green-200 rounded-md p-3">{success}</div>}
+          {error && <div className="text-red-600 dark:text-red-300 text-center font-medium bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/40 rounded-md p-3 mb-2">{error}</div>}
+          {success && <div className="text-green-600 dark:text-emerald-300 text-center font-medium bg-green-50 dark:bg-emerald-900/30 border border-green-200 dark:border-emerald-500/40 rounded-md p-3">{success}</div>}
         </div>
       )}
     </div>
