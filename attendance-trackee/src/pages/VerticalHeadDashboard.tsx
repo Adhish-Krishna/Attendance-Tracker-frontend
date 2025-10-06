@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { verticalLeadAPI } from '../api';
 import MeetingForm from '../components/MeetingForm';
+import ConfirmationModal from '../components/ConfirmationModal';
 import ThemeToggle from '../components/ThemeToggle';
 import type { Meeting } from '../types';
 
@@ -13,6 +14,10 @@ const VerticalHeadDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
+  const [deletingMeeting, setDeletingMeeting] = useState<string>('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [meetingToDelete, setMeetingToDelete] = useState<Meeting | null>(null);
 
   useEffect(() => {
     fetchMeetings();
@@ -60,6 +65,44 @@ const VerticalHeadDashboard: React.FC = () => {
 
   const handleViewMeeting = (meetingId: string) => {
     navigate(`/meeting/${meetingId}/attendance`);
+  };
+
+  const handleEditMeeting = (meeting: Meeting) => {
+    setEditingMeeting(meeting);
+    setShowCreateForm(true);
+  };
+
+  const handleDeleteMeeting = (meeting: Meeting) => {
+    setMeetingToDelete(meeting);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteMeeting = async () => {
+    if (!meetingToDelete) return;
+
+    try {
+      setDeletingMeeting(meetingToDelete._id);
+      await verticalLeadAPI.deleteMeeting(meetingToDelete._id);
+      await fetchMeetings(); // Refresh the meetings list
+      setShowDeleteModal(false);
+      setMeetingToDelete(null);
+    } catch (err: any) {
+      console.error('Error deleting meeting:', err);
+      setError(err?.error || err?.message || 'Failed to delete meeting. Please try again.');
+    } finally {
+      setDeletingMeeting('');
+    }
+  };
+
+  const handleCancelDelete = () => {
+    if (deletingMeeting) return; // Prevent closing if delete is in progress
+    setShowDeleteModal(false);
+    setMeetingToDelete(null);
+  };
+
+  const handleCloseForm = () => {
+    setShowCreateForm(false);
+    setEditingMeeting(null);
   };
 
   if (loading) {
@@ -190,20 +233,39 @@ const VerticalHeadDashboard: React.FC = () => {
                     </p>
                     <div className="mt-3">
                       <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
-                        {meeting.m_o_m || 'No description available'}
+                        {meeting.m_o_m || 'No minutes recorded'}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-center sm:justify-end">
+                <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
                   <button
                     onClick={() => handleViewMeeting(meeting._id)}
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 min-h-[40px]"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 min-h-[36px]"
                   >
-                    View / Manage
+                    View Attendance
                     <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
+                  </button>
+                  <button
+                    onClick={() => handleEditMeeting(meeting)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-slate-700 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-100 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 min-h-[36px]"
+                  >
+                    <svg className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteMeeting(meeting)}
+                    disabled={deletingMeeting === meeting._id}
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-red-300 dark:border-red-700 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 dark:text-red-300 bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 min-h-[36px] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
                   </button>
                 </div>
               </div>
@@ -215,8 +277,22 @@ const VerticalHeadDashboard: React.FC = () => {
       {/* Meeting Form Modal */}
       <MeetingForm
         isOpen={showCreateForm}
-        onClose={() => setShowCreateForm(false)}
+        onClose={handleCloseForm}
         onSuccess={fetchMeetings}
+        meeting={editingMeeting}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={confirmDeleteMeeting}
+        title="Delete Meeting"
+        message={`Are you sure you want to delete the meeting "${meetingToDelete?.meeting_name}"?\n\nThis action cannot be undone and will permanently remove all attendance data associated with this meeting.`}
+        confirmText="Delete Meeting"
+        cancelText="Cancel"
+        confirmButtonClass="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+        isLoading={deletingMeeting === meetingToDelete?._id}
       />
     </div>
   );

@@ -6,9 +6,15 @@ interface MeetingFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  meeting?: {
+    _id: string;
+    meeting_name: string;
+    date: string;
+    m_o_m?: string;
+  } | null;
 }
 
-const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess }) => {
+const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess, meeting }) => {
   const [formData, setFormData] = useState<CreateMeetingData>({
     meeting_name: '',
     date: '',
@@ -16,6 +22,25 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
+
+  // Update form data when meeting prop changes
+  React.useEffect(() => {
+    if (meeting) {
+      // Format date for datetime-local input
+      const formattedDate = new Date(meeting.date).toISOString().slice(0, 16);
+      setFormData({
+        meeting_name: meeting.meeting_name,
+        date: formattedDate,
+        m_o_m: meeting.m_o_m || '',
+      });
+    } else {
+      setFormData({
+        meeting_name: '',
+        date: '',
+        m_o_m: '',
+      });
+    }
+  }, [meeting, isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -33,15 +58,6 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
     if (!formData.date) {
       return 'Date and time are required';
     }
-    if (!formData.m_o_m.trim()) {
-      return 'Meeting description/agenda is required';
-    }
-
-    const selectedDate = new Date(formData.date);
-    const now = new Date();
-    if (selectedDate < now) {
-      return 'Please select a future date and time';
-    }
 
     return null;
   };
@@ -58,9 +74,17 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
 
     try {
       setLoading(true);
-      const response = await verticalLeadAPI.createMeeting(formData);
+      let response;
+      
+      if (meeting) {
+        // Update existing meeting
+        response = await verticalLeadAPI.updateMeeting(meeting._id, formData);
+      } else {
+        // Create new meeting
+        response = await verticalLeadAPI.createMeeting(formData);
+      }
 
-      if (response.message && response.meeting) {
+      if (response.message) {
         setFormData({
           meeting_name: '',
           date: '',
@@ -69,11 +93,11 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
         onSuccess();
         onClose();
       } else {
-        setError('Failed to create meeting');
+        setError(`Failed to ${meeting ? 'update' : 'create'} meeting`);
       }
     } catch (err: any) {
-      console.error('Error creating meeting:', err);
-      setError(err?.error || err?.message || 'Failed to create meeting. Please try again.');
+      console.error(`Error ${meeting ? 'updating' : 'creating'} meeting:`, err);
+      setError(err?.error || err?.message || `Failed to ${meeting ? 'update' : 'create'} meeting. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -97,7 +121,9 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
       <div className="bg-white dark:bg-slate-900 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-800 shadow-xl shadow-blue-500/10 dark:shadow-slate-900/40 transition-colors">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Create New Meeting</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              {meeting ? 'Edit Meeting' : 'Create New Meeting'}
+            </h3>
             <button
               onClick={handleClose}
               disabled={loading}
@@ -145,7 +171,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
 
             <div>
               <label htmlFor="m_o_m" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                Meeting Agenda / Description *
+                Minutes of Meeting
               </label>
               <textarea
                 id="m_o_m"
@@ -154,8 +180,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
                 onChange={handleInputChange}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                placeholder="Describe the meeting agenda, topics to be covered, or any important notes..."
-                required
+                placeholder="Enter the minutes of the meeting, key decisions, action items, or important notes discussed... (Optional)"
                 disabled={loading}
               />
             </div>
@@ -183,10 +208,10 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess })
                 {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
-                    Creating...
+                    {meeting ? 'Updating...' : 'Creating...'}
                   </>
                 ) : (
-                  'Create Meeting'
+                  meeting ? 'Update Meeting' : 'Create Meeting'
                 )}
               </button>
             </div>

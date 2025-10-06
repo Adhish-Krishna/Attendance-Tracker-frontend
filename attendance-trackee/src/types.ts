@@ -20,7 +20,7 @@ export interface Meeting {
   _id: string;
   meeting_name: string;
   date: string;
-  m_o_m: string;
+  m_o_m?: string;
   vertical?: string;
   created_at?: string;
   updated_at?: string;
@@ -29,7 +29,7 @@ export interface Meeting {
 export interface CreateMeetingData {
   meeting_name: string;
   date: string;
-  m_o_m: string;
+  m_o_m?: string;
 }
 
 // Member types

@@ -146,7 +146,7 @@ export const verticalLeadAPI = {
   createMeeting: async (meetingData: {
     meeting_name: string;
     date: string;
-    m_o_m: string;
+    m_o_m?: string;
   }) => {
     const response = await api.post('/verticalleads/meetings', meetingData);
     return response.data; // Returns { message, meeting }

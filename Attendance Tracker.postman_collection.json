@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bf60b0b8-a00c-479f-9cca-78d3dff06118",
+		"_postman_id": "95a629cb-a574-4ab0-9fc5-7ce296040262",
 		"name": "Attendance Tracker",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "33146027"
@@ -201,6 +201,31 @@
 										"23n228"
 									]
 								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "global admin operations",
+					"item": [
+						{
+							"name": "Get Attendance Summary for All Verticals (Global Admin)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/globaladmin/attendance-summary/all",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"globaladmin",
+										"attendance-summary",
+										"all"
+									]
+								},
+								"description": "Get attendance summary for all members in all verticals (global admin only). Returns attended, not attended, total meetings, and percentage for each member."
 							},
 							"response": []
 						}
@@ -439,7 +464,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"meeting_name\": \"Intrams Discussion\",\r\n    \"date\":\"09-14-2025\",\r\n    \"m_o_m\":\"Assigned works to new recruits for intrams\"\r\n}",
+									"raw": "{\r\n    \"meeting_name\": \"New meeting test new\",\r\n    \"date\":\"10-06-2025\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -597,26 +622,6 @@
 					]
 				}
 			]
-		},
-		{
-				"name": "Get Attendance Summary for All Verticals (Global Admin)",
-				"request": {
-					"method": "GET",
-					"header": [],
-					"url": {
-						"raw": "{{baseURL}}/globaladmin/attendance-summary/all",
-						"host": [
-							"{{baseURL}}"
-						],
-						"path": [
-							"globaladmin",
-							"attendance-summary",
-							"all"
-						]
-					},
-					"description": "Get attendance summary for all members in all verticals (global admin only). Returns attended, not attended, total meetings, and percentage for each member."
-				},
-				"response": []
 		}
 	],
 	"variable": [
