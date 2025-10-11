@@ -40,6 +40,7 @@ export interface Member {
   year: number;
   department: string;
   vertical?: string;
+  role?: 'Vertical Lead' | 'Team Coordinator' | 'Member';
 }
 
 export interface MemberAttendance {

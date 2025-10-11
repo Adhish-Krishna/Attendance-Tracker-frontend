@@ -80,6 +80,77 @@ export const globalAdminAPI = {
   getAllVerticalsAttendanceSummary: async () => {
     const response = await api.get('/globaladmin/attendance-summary/all');
     return response.data;
+  },
+
+  // Delete member directly (Global Admin)
+  deleteMember: async (roll_no: string) => {
+    const response = await api.delete(`/globaladmin/members/${roll_no}`);
+    return response.data;
+  },
+
+  // Delete request management
+  getAllDeleteRequests: async (status?: 'pending' | 'approved' | 'rejected') => {
+    const params = status ? { status } : {};
+    const response = await api.get('/globaladmin/delete-requests', { params });
+    return response.data;
+  },
+
+  getDeleteRequestById: async (requestId: string) => {
+    const response = await api.get(`/globaladmin/delete-requests/${requestId}`);
+    return response.data;
+  },
+
+  reviewDeleteRequest: async (requestId: string, action: 'approve' | 'reject') => {
+    const response = await api.put(`/globaladmin/delete-requests/${requestId}`, { action });
+    return response.data;
+  }
+};
+
+// Global Admin operations (meetings, attendance, reports)
+export const globalAdminOperationsAPI = {
+  // Meetings (created by Global Admin / OB)
+  createMeeting: async (meetingData: { meeting_name: string; date: string; m_o_m?: string }) => {
+    const response = await api.post('/globaladmin/meetings', meetingData);
+    return response.data;
+  },
+
+  getMeetings: async () => {
+    const response = await api.get('/globaladmin/meetings');
+    return response.data; // { message, count, meetings }
+  },
+
+  getMeetingById: async (meetingId: string) => {
+    const response = await api.get(`/globaladmin/meetings/${meetingId}`);
+    return response.data;
+  },
+
+  updateMeeting: async (meetingId: string, updateData: { meeting_name?: string; date?: string; m_o_m?: string }) => {
+    const response = await api.put(`/globaladmin/meetings/${meetingId}`, updateData);
+    return response.data;
+  },
+
+  deleteMeeting: async (meetingId: string) => {
+    const response = await api.delete(`/globaladmin/meetings/${meetingId}`);
+    return response.data;
+  },
+
+  // Attendance (for meetings created by OB)
+  getMembersAttendance: async (meetingId: string) => {
+    const response = await api.get(`/globaladmin/meetings/${meetingId}/members-attendance`);
+    return response.data; // { message, meeting, members, count }
+  },
+
+  updateAttendance: async (meetingId: string, memberAttendance: { [roll_no: string]: boolean }) => {
+    const response = await api.put(`/globaladmin/meetings/${meetingId}/attendance`, { memberAttendance });
+    return response.data; // { message, modified, upserted }
+  },
+
+  // Attendance report (CSV)
+  generateAttendanceReport: async (threshold?: number) => {
+    const params: any = {};
+    if (threshold !== undefined) params.threshold = threshold;
+    const response = await api.get('/globaladmin/attendance-report', { params, responseType: 'blob' });
+    return response; // caller can handle blob to download
   }
 };
 
@@ -139,6 +210,15 @@ export const verticalLeadAPI = {
 
   deleteMember: async (roll_no: string) => {
     const response = await api.delete(`/verticalleads/members/${roll_no}`);
+    return response.data;
+  },
+
+  // Request member deletion (creates delete request for global admin)
+  requestMemberDeletion: async (roll_no: string, reason?: string) => {
+    const response = await api.post('/verticalleads/members/delete-request', { 
+      roll_no,
+      reason 
+    });
     return response.data;
   },
 

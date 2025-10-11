@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useBeforeUnload } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { verticalLeadAPI } from '../api';
+import { verticalLeadAPI, globalAdminOperationsAPI } from '../api';
 import type { Meeting, Member, AttendanceData } from '../types';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -28,6 +28,11 @@ const MeetingAttendancePage: React.FC = () => {
     setHasUnsavedChanges(hasChanges);
     return hasChanges;
   }, [attendance, originalAttendance]);
+
+  // Helper function to get the correct dashboard path based on user role
+  const getDashboardPath = () => {
+    return user?.role === 'global_admin' ? '/admin/dashboard' : '/dashboard';
+  };
 
   useEffect(() => {
     checkForChanges();
@@ -61,8 +66,11 @@ const MeetingAttendancePage: React.FC = () => {
       setLoading(true);
       setError('');
 
-      // Fetch meeting details and members attendance (combined in one API call based on backend)
-      const response = await verticalLeadAPI.getMembersAttendance(meetingId);
+  // Choose API based on user role: vertical_head uses verticalLeadAPI, global_admin uses globalAdminOperationsAPI
+  const apiToUse = user?.role === 'global_admin' ? globalAdminOperationsAPI : verticalLeadAPI;
+
+  // Fetch meeting details and members attendance (combined in one API call based on backend)
+  const response = await apiToUse.getMembersAttendance(meetingId);
 
       if (response.message && response.meeting && response.members) {
         setMeeting(response.meeting);
@@ -101,7 +109,8 @@ const MeetingAttendancePage: React.FC = () => {
       setSaving(true);
       setError('');
 
-      const response = await verticalLeadAPI.updateAttendance(meetingId, attendance);
+  const apiToUse = user?.role === 'global_admin' ? globalAdminOperationsAPI : verticalLeadAPI;
+  const response = await apiToUse.updateAttendance(meetingId, attendance);
       
       if (response.message && (response.modified !== undefined || response.upserted !== undefined)) {
         setOriginalAttendance({ ...attendance });
@@ -120,17 +129,18 @@ const MeetingAttendancePage: React.FC = () => {
   };
 
   const handleBack = () => {
+    const dashboardPath = getDashboardPath();
     if (hasUnsavedChanges) {
       const confirmLeave = window.confirm(
         'You have unsaved changes. Do you want to save before leaving?'
       );
       if (confirmLeave) {
-        handleSaveChanges().then(() => navigate('/dashboard'));
+        handleSaveChanges().then(() => navigate(dashboardPath));
       } else if (window.confirm('Are you sure you want to leave without saving?')) {
-        navigate('/dashboard');
+        navigate(dashboardPath);
       }
     } else {
-      navigate('/dashboard');
+      navigate(dashboardPath);
     }
   };
 
@@ -182,7 +192,7 @@ const MeetingAttendancePage: React.FC = () => {
         <div className="text-center bg-white/80 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800 rounded-xl px-8 py-10 shadow-md shadow-blue-500/5 dark:shadow-blue-900/20">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Meeting Not Found</h2>
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate(getDashboardPath())}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-slate-900"
           >
             Back to Dashboard

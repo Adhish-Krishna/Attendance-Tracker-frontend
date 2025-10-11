@@ -11,6 +11,9 @@ import MeetingAttendancePage from './pages/MeetingAttendancePage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import VerticalHeadAttendance from './pages/VerticalHeadAttendance';
 import GlobalAdminAllAttendancePage from './pages/GlobalAdminAllAttendancePage';
+import AddVerticalHeadPage from './pages/AddVerticalHeadPage';
+import GlobalAdminVerticalAttendance from './pages/GlobalAdminVerticalAttendance';
+import DeleteRequestsPage from './pages/DeleteRequestsPage';
 
 import './App.css';
 
@@ -60,7 +63,7 @@ function App() {
             <Route 
               path="/meeting/:meetingId/attendance" 
               element={
-                <ProtectedRoute allowedRoles={['vertical_head']}>
+                <ProtectedRoute allowedRoles={['vertical_head','global_admin']}>
                   <MeetingAttendancePage />
                 </ProtectedRoute>
               } 
@@ -83,7 +86,38 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/global-admin/all-attendance" element={<GlobalAdminAllAttendancePage />} />
+            <Route 
+              path="/admin/add-vertical-head" 
+              element={
+                <ProtectedRoute allowedRoles={['global_admin']}>
+                  <AddVerticalHeadPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/vertical-attendance" 
+              element={
+                <ProtectedRoute allowedRoles={['global_admin']}>
+                  <GlobalAdminVerticalAttendance />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/global-admin/all-attendance" 
+              element={
+                <ProtectedRoute allowedRoles={['global_admin']}>
+                  <GlobalAdminAllAttendancePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/delete-requests" 
+              element={
+                <ProtectedRoute allowedRoles={['global_admin']}>
+                  <DeleteRequestsPage />
+                </ProtectedRoute>
+              } 
+            />
 
             {/* Default route - redirect to appropriate dashboard */}
             <Route path="/" element={<HomeRedirect />} />

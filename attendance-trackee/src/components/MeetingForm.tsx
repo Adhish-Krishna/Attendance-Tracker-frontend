@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { verticalLeadAPI } from '../api';
+import type { verticalLeadAPI as _v } from '../api';
 import type { CreateMeetingData } from '../types';
 
 interface MeetingFormProps {
@@ -12,9 +13,14 @@ interface MeetingFormProps {
     date: string;
     m_o_m?: string;
   } | null;
+  // Optional API object to use (defaults to verticalLeadAPI)
+  api?: {
+    createMeeting: (data: any) => Promise<any>;
+    updateMeeting: (id: string, data: any) => Promise<any>;
+  };
 }
 
-const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess, meeting }) => {
+const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess, meeting, api }) => {
   const [formData, setFormData] = useState<CreateMeetingData>({
     meeting_name: '',
     date: '',
@@ -78,10 +84,10 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ isOpen, onClose, onSuccess, m
       
       if (meeting) {
         // Update existing meeting
-        response = await verticalLeadAPI.updateMeeting(meeting._id, formData);
+        response = await (api ?? verticalLeadAPI).updateMeeting(meeting._id, formData);
       } else {
         // Create new meeting
-        response = await verticalLeadAPI.createMeeting(formData);
+        response = await (api ?? verticalLeadAPI).createMeeting(formData);
       }
 
       if (response.message) {

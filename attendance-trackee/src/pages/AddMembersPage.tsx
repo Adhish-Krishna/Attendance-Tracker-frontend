@@ -21,7 +21,7 @@ const AddMembersPage: React.FC = () => {
   };
 
   const handleDownloadTemplate = () => {
-  const headers = ['Name', 'Roll No', 'Year', 'Department'];
+  const headers = ['Name', 'Roll No', 'Year', 'Department', 'Role'];
 
     const worksheet = XLSX.utils.aoa_to_sheet([headers]);
     worksheet['!cols'] = headers.map(() => ({ wch: 24 }));

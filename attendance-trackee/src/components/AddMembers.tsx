@@ -13,13 +13,14 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
     roll_no: '',
     year: 1,
     department: '',
+    role: 'Member', // Default role
   });
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setError('');
@@ -42,7 +43,7 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
     try {
       await verticalLeadAPI.addMember(form);
       setSuccess('Member added successfully!');
-      setForm({ name: '', roll_no: '', year: 1, department: '' });
+      setForm({ name: '', roll_no: '', year: 1, department: '', role: 'Member' });
       onSuccess();
     } catch (err: any) {
       setError(err.error || 'Failed to add member.');
@@ -86,6 +87,11 @@ const AddMembers: React.FC<AddMembersProps> = ({ onSuccess, onDownloadTemplate }
             <input type="text" name="roll_no" value={form.roll_no} onChange={handleInputChange} placeholder="Roll No" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
             <input type="number" name="year" value={form.year} onChange={handleInputChange} placeholder="Year" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" min={1} max={5} required disabled={loading} />
             <input type="text" name="department" value={form.department} onChange={handleInputChange} placeholder="Department" className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading} />
+            <select name="role" value={form.role || 'Member'} onChange={handleInputChange} className="px-3 py-2 border border-gray-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required disabled={loading}>
+              <option value="Member">Member</option>
+              <option value="Team Coordinator">Team Coordinator</option>
+              <option value="Vertical Lead">Vertical Lead</option>
+            </select>
           </div>
           <button type="submit" className="w-full px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:bg-gray-400 dark:disabled:bg-slate-700 transition-colors duration-200 font-medium" disabled={loading}>Add Member</button>
         </form>

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { globalAdminAPI } from '../api';
+import { globalAdminAPI, globalAdminOperationsAPI } from '../api';
 import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 
@@ -10,6 +10,7 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<any[]>([]);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [downloadingCsv, setDownloadingCsv] = useState(false);
   const navigate = useNavigate();
   const [verticalFilter, setVerticalFilter] = useState<string>('');
   const [yearFilter, setYearFilter] = useState<string>('');
@@ -49,6 +50,30 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
       return percentB - percentA;
     }
   });
+
+  // Download CSV report
+  const handleDownloadCsv = async () => {
+    try {
+      setDownloadingCsv(true);
+      const response = await globalAdminOperationsAPI.generateAttendanceReport();
+      
+      // Create blob from response
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `attendance-report-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading CSV:', err);
+      alert('Failed to download attendance report');
+    } finally {
+      setDownloadingCsv(false);
+    }
+  };
 
   // Color chip for percentage
   const getAttendanceChip = (percentage: number) => {
@@ -97,6 +122,28 @@ const GlobalAdminAllAttendancePage: React.FC = () => {
                 </svg>
               </button>
               <h1 className="ml-2 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">All Members Attendance</h1>
+              <button
+                onClick={handleDownloadCsv}
+                disabled={downloadingCsv || attendanceLoading}
+                className="ml-4 inline-flex items-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+              >
+                {downloadingCsv ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Downloading...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download CSV
+                  </>
+                )}
+              </button>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
               <div className="flex gap-2 items-center bg-gray-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-400/50 rounded-lg px-2 py-1.5">
