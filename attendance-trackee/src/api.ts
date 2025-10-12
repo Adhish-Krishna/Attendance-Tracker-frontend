@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = (import.meta as any).env.VITE_BACKEND_URL;
+const ATTENDANCE_THRESHOLD = import.meta.env.VITE_ATTENDANCE_THRESHOLD;
 
 // Configure axios instance
 const api = axios.create({
@@ -149,7 +150,7 @@ export const globalAdminOperationsAPI = {
   generateAttendanceReport: async (threshold?: number) => {
     const params: any = {};
     if (threshold !== undefined) params.threshold = threshold;
-    const response = await api.get('/globaladmin/attendance-report', { params, responseType: 'blob' });
+    const response = await api.get(`/globaladmin/attendance-report?threshold=${parseInt(ATTENDANCE_THRESHOLD)}`, { params, responseType: 'blob' });
     return response; // caller can handle blob to download
   }
 };
