@@ -5,7 +5,7 @@ interface ConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
-  message: string | React.ReactNode;
+  message: string;
   confirmText?: string;
   cancelText?: string;
   confirmButtonClass?: string;
@@ -61,15 +61,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
           {/* Message */}
           <div className="mb-6">
-            {typeof message === 'string' ? (
-              <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">
-                {message}
-              </p>
-            ) : (
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                {message}
-              </div>
-            )}
+            <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">
+              {message}
+            </p>
           </div>
 
           {/* Actions */}

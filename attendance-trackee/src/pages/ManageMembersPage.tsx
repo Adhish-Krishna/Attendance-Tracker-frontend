@@ -13,7 +13,6 @@ const ManageMembersPage: React.FC = () => {
   // Delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingMember, setDeletingMember] = useState(false);
-  const [memberDetails, setMemberDetails] = useState<any>(null);
 
   const handleLogout = async () => {
     try {
@@ -23,22 +22,12 @@ const ManageMembersPage: React.FC = () => {
     }
   };
 
-  const handleDeleteMember = async () => {
+  const handleDeleteMember = () => {
     if (!rollNumber.trim()) {
       setError('Please enter a roll number');
       return;
     }
-    
-    // Fetch member details before showing confirmation
-    try {
-      setError('');
-      // Note: You'll need to add a getMemberByRollNo API method
-      // For now, we'll just show the roll number in the confirmation
-      setMemberDetails({ roll_no: rollNumber.trim() });
-      setShowDeleteModal(true);
-    } catch (err: any) {
-      setError('Failed to fetch member details. Please try again.');
-    }
+    setShowDeleteModal(true);
   };
 
   const confirmDeleteMember = async () => {
@@ -202,30 +191,7 @@ const ManageMembersPage: React.FC = () => {
         onClose={handleCancelDelete}
         onConfirm={confirmDeleteMember}
         title="Delete Member"
-        message={memberDetails ? (
-          <div className="space-y-2">
-            <p>Are you sure you want to delete this member?</p>
-            <div className="bg-gray-50 dark:bg-slate-800 rounded p-3 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Roll Number:</span>
-                <span className="text-gray-900 dark:text-gray-100">{memberDetails.roll_no}</span>
-              </div>
-              {memberDetails.name && (
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Name:</span>
-                  <span className="text-gray-900 dark:text-gray-100">{memberDetails.name}</span>
-                </div>
-              )}
-              {memberDetails.vertical && (
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Vertical:</span>
-                  <span className="text-gray-900 dark:text-gray-100">{memberDetails.vertical}</span>
-                </div>
-              )}
-            </div>
-            <p className="text-red-600 dark:text-red-400 text-sm font-medium">This action cannot be undone and will permanently remove this member from the system.</p>
-          </div>
-        ) : `Are you sure you want to delete the member with roll number "${rollNumber}"?\n\nThis action cannot be undone and will permanently remove this member from the system.`}
+        message={`Are you sure you want to delete the member with roll number "${rollNumber}"?\n\nThis action cannot be undone and will permanently remove this member from the system.`}
         confirmText="Delete Member"
         cancelText="Cancel"
         confirmButtonClass="bg-red-600 hover:bg-red-700 focus:ring-red-500"

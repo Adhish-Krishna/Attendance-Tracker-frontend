@@ -68,7 +68,7 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
       const meetingsResponse = await globalAdminOperationsAPI.getMeetings();
       if (meetingsResponse.meetings && Array.isArray(meetingsResponse.meetings)) {
         const sortedMeetings = meetingsResponse.meetings
-          .filter((m: Meeting) => m.vertical && m.created_by === 'Vertical Lead') // Show only Vertical Lead meetings
+          .filter((m: Meeting) => m.vertical) // Only show meetings with a vertical
           .sort((a: Meeting, b: Meeting) => {
             return new Date(b.date).getTime() - new Date(a.date).getTime();
           });
@@ -271,11 +271,6 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {formatDate(meeting.date)}
                         </p>
-                        {meeting.created_by_name && (
-                          <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                            Created by: <span className="font-semibold">{meeting.created_by_name}</span>
-                          </p>
-                        )}
                       </div>
                     </div>
                     <div className="mb-4">

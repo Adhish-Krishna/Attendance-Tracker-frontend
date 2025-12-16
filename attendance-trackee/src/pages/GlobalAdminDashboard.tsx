@@ -18,13 +18,10 @@ const GlobalAdminDashboard: React.FC = () => {
   const [deletingMeeting, setDeletingMeeting] = useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [meetingToDelete, setMeetingToDelete] = useState<Meeting | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [memberCountByVertical, setMemberCountByVertical] = useState<Record<string, number>>({});
-  const [loadingMemberCounts, setLoadingMemberCounts] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchMeetings();
-    fetchMemberCountsByVertical();
   }, []);
 
   const fetchMeetings = async () => {
@@ -47,42 +44,6 @@ const GlobalAdminDashboard: React.FC = () => {
       setError('Error loading meetings. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchMemberCountsByVertical = async () => {
-    try {
-      setLoadingMemberCounts(true);
-      const response = await globalAdminOperationsAPI.getMembersCountByVertical();
-      console.log('Member counts response:', response);
-      
-      let counts: Record<string, number> = {};
-      
-      // Handle the actual response format from backend
-      if (response.vertical_wise_count && Array.isArray(response.vertical_wise_count)) {
-        // Convert array format to object format
-        response.vertical_wise_count.forEach((item: any) => {
-          if (item.vertical && item.count !== undefined) {
-            counts[item.vertical] = item.count;
-          }
-        });
-      } else if (response.data && typeof response.data === 'object') {
-        counts = response.data;
-      } else if (response.counts && typeof response.counts === 'object') {
-        counts = response.counts;
-      } else if (typeof response === 'object') {
-        // Try to use the response directly if it's already the counts object
-        counts = response;
-      }
-      
-      console.log('Transformed counts:', counts);
-      setMemberCountByVertical(counts);
-    } catch (err) {
-      console.error('Error fetching member counts:', err);
-      // Set default empty counts to avoid loading state forever
-      setMemberCountByVertical({});
-    } finally {
-      setLoadingMemberCounts(false);
     }
   };
 
@@ -422,37 +383,6 @@ const GlobalAdminDashboard: React.FC = () => {
               </p>
             </div>
 
-            {/* Member Count by Vertical */}
-            <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {loadingMemberCounts ? (
-                // Loading skeleton
-                Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-4 shadow-sm animate-pulse">
-                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded mb-2 w-3/4"></div>
-                    <div className="h-6 bg-gray-200 dark:bg-slate-700 rounded"></div>
-                  </div>
-                ))
-              ) : Object.entries(memberCountByVertical).length > 0 ? (
-                Object.entries(memberCountByVertical).map(([vertical, count]) => (
-                  <div key={vertical} className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      {vertical}
-                    </div>
-                    <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                      {count}
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      {count === 1 ? 'member' : 'members'}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-8">
-                  <p className="text-gray-600 dark:text-gray-300">No member data available</p>
-                </div>
-              )}
-            </div>
-
             {/* Error Message */}
             {error && (
               <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-200 px-4 py-3 rounded-md">
@@ -505,17 +435,6 @@ const GlobalAdminDashboard: React.FC = () => {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {formatDate(meeting.date)}
                         </p>
-                        {/* Display creator information */}
-                        {meeting.created_by_name && (
-                          <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                            Created by: <span className="font-semibold">{meeting.created_by_name}</span>
-                          </p>
-                        )}
-                        {meeting.vertical && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Vertical: <span className="font-semibold">{meeting.vertical}</span>
-                          </p>
-                        )}
                         <div className="mt-3">
                           <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
                             {meeting.m_o_m || 'No minutes recorded'}

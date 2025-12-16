@@ -13,9 +13,6 @@ const LoginPage: React.FC = () => {
   });
   const [error, setError] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
-  
-  // Define verticals
-  const verticals = ['Tech', 'ERB', 'Sponsorship', 'PR', 'Photography', 'Ambience'];
 
   // Redirect if already authenticated
   if (isAuthenticated && user) {
@@ -100,41 +97,25 @@ const LoginPage: React.FC = () => {
                 required
               >
                 <option value="vertical_head">Vertical Head</option>
-                <option value="global_admin">Office Bearer</option>
+                <option value="global_admin">Global Admin</option>
               </select>
             </div>
             
             <div className="mb-4">
               <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                {formData.role === 'global_admin' ? 'Username' : 'Vertical'}
+                {formData.role === 'global_admin' ? 'Username' : 'Roll Number'}
               </label>
-              {formData.role === 'global_admin' ? (
-                <input
-                  id="identifier"
-                  name="identifier"
-                  type="text"
-                  autoComplete="username"
-                  required
-                  value={formData.identifier}
-                  onChange={handleInputChange}
-                  className="relative block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md placeholder-gray-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter office bearer username"
-                />
-              ) : (
-                <select
-                  id="identifier"
-                  name="identifier"
-                  value={formData.identifier}
-                  onChange={handleInputChange}
-                  className="relative block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                  required
-                >
-                  <option value="">Select a vertical</option>
-                  {verticals.map((vertical) => (
-                    <option key={vertical} value={vertical}>{vertical}</option>
-                  ))}
-                </select>
-              )}
+              <input
+                id="identifier"
+                name="identifier"
+                type="text"
+                autoComplete="username"
+                required
+                value={formData.identifier}
+                onChange={handleInputChange}
+                className="relative block w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md placeholder-gray-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                placeholder={formData.role === 'global_admin' ? 'Enter your username' : 'Enter your roll number'}
+              />
             </div>
             
             <div className="mb-6">

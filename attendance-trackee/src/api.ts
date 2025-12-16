@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = (import.meta as any).env.VITE_BACKEND_URL;
+const ATTENDANCE_THRESHOLD = import.meta.env.VITE_ATTENDANCE_THRESHOLD;
 
 // Configure axios instance
 const api = axios.create({
@@ -88,12 +89,6 @@ export const globalAdminAPI = {
     return response.data;
   },
 
-  // Get member by roll number (for fetching details in delete request)
-  getMemberByRollNo: async (roll_no: string) => {
-    const response = await api.get(`/globaladmin/members/${roll_no}`);
-    return response.data;
-  },
-
   // Delete request management
   getAllDeleteRequests: async (status?: 'pending' | 'approved' | 'rejected') => {
     const params = status ? { status } : {};
@@ -155,14 +150,8 @@ export const globalAdminOperationsAPI = {
   generateAttendanceReport: async (threshold?: number) => {
     const params: any = {};
     if (threshold !== undefined) params.threshold = threshold;
-    const response = await api.get('/globaladmin/attendance-report', { params, responseType: 'blob' });
+    const response = await api.get(`/globaladmin/attendance-report?threshold=${parseInt(ATTENDANCE_THRESHOLD)}`, { params, responseType: 'blob' });
     return response; // caller can handle blob to download
-  },
-
-  // Get member count by vertical
-  getMembersCountByVertical: async () => {
-    const response = await api.get('/globaladmin/members-count/vertical');
-    return response.data;
   }
 };
 
@@ -174,11 +163,10 @@ export const verticalLeadAPI = {
     });
     return response.data;
   },
-  login: async (vertical: string, password: string) => {
+  login: async (roll_no: string, password: string) => {
     const response = await api.post('/auth/verticalleads/login', {
-      vertical,
-      password,
-      role: 'Vertical Lead'
+      roll_no,
+      password
     });
     return response; // Return full response object, not just response.data
   },
@@ -209,11 +197,6 @@ export const verticalLeadAPI = {
     return response.data;
   },
 
-  getMemberDeletionDetails: async (roll_no: string) => {
-    const response = await api.get(`/verticalleads/members/${roll_no}/deletion-details`);
-    return response.data;
-  },
-
   updateMember: async (
     roll_no: string,
     updateData: {
@@ -232,11 +215,10 @@ export const verticalLeadAPI = {
   },
 
   // Request member deletion (creates delete request for global admin)
-  requestMemberDeletion: async (roll_no: string, reason?: string, verticalHeadName?: string) => {
+  requestMemberDeletion: async (roll_no: string, reason?: string) => {
     const response = await api.post('/verticalleads/delete-requests', { 
       roll_no,
-      reason,
-      vertical_head_name: verticalHeadName
+      reason 
     });
     return response.data;
   },
