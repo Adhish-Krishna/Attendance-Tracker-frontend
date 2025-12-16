@@ -18,7 +18,6 @@ interface CreateLeadForm {
   year: number;
   department: string;
   vertical: string;
-  password: string;
 }
 
 const AddVerticalHeadPage: React.FC = () => {
@@ -33,8 +32,7 @@ const AddVerticalHeadPage: React.FC = () => {
     roll_no: '',
     year: 1,
     department: '',
-    vertical: '',
-    password: ''
+    vertical: ''
   });
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
@@ -49,7 +47,7 @@ const AddVerticalHeadPage: React.FC = () => {
     setError('');
     try {
       const response = await globalAdminAPI.getVerticalLeads();
-      
+
       let leadsData = [];
       if (Array.isArray(response)) {
         leadsData = response;
@@ -62,7 +60,7 @@ const AddVerticalHeadPage: React.FC = () => {
       } else if (response?.leads && Array.isArray(response.leads)) {
         leadsData = response.leads;
       }
-      
+
       setVerticalLeads(leadsData);
     } catch (err: any) {
       console.error('Error fetching vertical leads:', err);
@@ -77,14 +75,14 @@ const AddVerticalHeadPage: React.FC = () => {
     setError('');
     setSuccess('');
     setIsSubmitting(true);
-    
-    if (!createForm.name.trim() || !createForm.roll_no.trim() || !createForm.department.trim() || 
-        !createForm.vertical.trim() || (!editingLead && !createForm.password.trim())) {
+
+    if (!createForm.name.trim() || !createForm.roll_no.trim() || !createForm.department.trim() ||
+      !createForm.vertical.trim()) {
       setError('Please fill in all required fields');
       setIsSubmitting(false);
       return;
     }
-    
+
     try {
       if (editingLead) {
         await globalAdminAPI.updateVerticalLead(editingLead.roll_no, {
@@ -98,7 +96,7 @@ const AddVerticalHeadPage: React.FC = () => {
         await globalAdminAPI.createVerticalLead(createForm);
         setSuccess('Vertical head created successfully!');
       }
-      
+
       setShowCreateForm(false);
       resetForm();
       await fetchVerticalLeads();
@@ -131,8 +129,7 @@ const AddVerticalHeadPage: React.FC = () => {
       roll_no: lead.roll_no,
       year: lead.year,
       department: lead.department,
-      vertical: lead.vertical,
-      password: ''
+      vertical: lead.vertical
     });
     setShowCreateForm(true);
   };
@@ -145,8 +142,7 @@ const AddVerticalHeadPage: React.FC = () => {
       roll_no: '',
       year: 1,
       department: '',
-      vertical: '',
-      password: ''
+      vertical: ''
     });
     setError('');
     setSuccess('');
@@ -203,7 +199,7 @@ const AddVerticalHeadPage: React.FC = () => {
         {error && (
           <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-200 px-4 py-3 rounded-md">
             {error}
-            <button 
+            <button
               onClick={() => setError('')}
               className="float-right text-red-400 dark:text-red-300 hover:text-red-600 dark:hover:text-red-200"
             >
@@ -214,7 +210,7 @@ const AddVerticalHeadPage: React.FC = () => {
         {success && (
           <div className="mb-6 bg-green-50 dark:bg-emerald-900/30 border border-green-200 dark:border-emerald-500/40 text-green-700 dark:text-green-200 px-4 py-3 rounded-md">
             {success}
-            <button 
+            <button
               onClick={() => setSuccess('')}
               className="float-right text-green-400 dark:text-green-300 hover:text-green-600 dark:hover:text-green-100"
             >
@@ -236,7 +232,7 @@ const AddVerticalHeadPage: React.FC = () => {
               Add New Vertical Head
             </button>
           </div>
-          
+
           {verticalLeads.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +328,7 @@ const AddVerticalHeadPage: React.FC = () => {
                       type="text"
                       required
                       value={createForm.name}
-                      onChange={(e) => setCreateForm({...createForm, name: e.target.value})}
+                      onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder="Enter full name"
                     />
@@ -343,7 +339,7 @@ const AddVerticalHeadPage: React.FC = () => {
                       type="text"
                       required
                       value={createForm.roll_no}
-                      onChange={(e) => setCreateForm({...createForm, roll_no: e.target.value})}
+                      onChange={(e) => setCreateForm({ ...createForm, roll_no: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder="e.g., 23n206"
                       disabled={!!editingLead}
@@ -355,7 +351,7 @@ const AddVerticalHeadPage: React.FC = () => {
                       type="text"
                       required
                       value={createForm.department}
-                      onChange={(e) => setCreateForm({...createForm, department: e.target.value})}
+                      onChange={(e) => setCreateForm({ ...createForm, department: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder="e.g., CSE AI ML"
                     />
@@ -364,7 +360,7 @@ const AddVerticalHeadPage: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Year</label>
                     <select
                       value={createForm.year}
-                      onChange={(e) => setCreateForm({...createForm, year: parseInt(e.target.value)})}
+                      onChange={(e) => setCreateForm({ ...createForm, year: parseInt(e.target.value) })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value={1}>1st Year</option>
@@ -375,28 +371,20 @@ const AddVerticalHeadPage: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Vertical</label>
-                    <input
-                      type="text"
+                    <select
                       required
                       value={createForm.vertical}
-                      onChange={(e) => setCreateForm({...createForm, vertical: e.target.value})}
+                      onChange={(e) => setCreateForm({ ...createForm, vertical: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      placeholder="e.g., Tech, Marketing, Design"
-                    />
+                    >
+                      <option value="">Select a vertical</option>
+                      <option value="Tech">Tech</option>
+                      <option value="ERM">ERM</option>
+                      <option value="Sponsorship & PR">Sponsorship & PR</option>
+                      <option value="Photography">Photography</option>
+                      <option value="Ambience">Ambience</option>
+                    </select>
                   </div>
-                  {!editingLead && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Password</label>
-                      <input
-                        type="password"
-                        required
-                        value={createForm.password}
-                        onChange={(e) => setCreateForm({...createForm, password: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                        placeholder="Enter secure password"
-                      />
-                    </div>
-                  )}
                   <div className="flex gap-3 pt-4">
                     <button
                       type="submit"

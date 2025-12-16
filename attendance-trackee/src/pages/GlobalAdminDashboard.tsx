@@ -121,9 +121,8 @@ const GlobalAdminDashboard: React.FC = () => {
       <div className="flex">
         {/* Desktop Sidebar Container */}
         <div className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ease-in-out hidden lg:block flex-shrink-0`}>
-          <div className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 shadow-lg transition-transform duration-300 ease-in-out ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-64'
-          }`}>
+          <div className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 shadow-lg transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-64'
+            }`}>
             {/* Header */}
             <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-slate-800">
               <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">Admin Panel</h1>
@@ -136,7 +135,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
               </button>
             </div>
-            
+
             {/* Navigation Menu */}
             <div className="mt-6 px-3 pb-6 overflow-y-auto" style={{ height: 'calc(100vh - 64px - 140px)' }}>
               <div className="space-y-1">
@@ -149,7 +148,7 @@ const GlobalAdminDashboard: React.FC = () => {
                   </svg>
                   Create Meeting
                 </button>
-                
+
                 <button
                   onClick={() => navigate('/admin/manage-members')}
                   className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -159,7 +158,7 @@ const GlobalAdminDashboard: React.FC = () => {
                   </svg>
                   Delete Members
                 </button>
-                
+
                 <button
                   onClick={() => navigate('/admin/delete-requests')}
                   className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -169,7 +168,17 @@ const GlobalAdminDashboard: React.FC = () => {
                   </svg>
                   Delete Requests
                 </button>
-                
+
+                <button
+                  onClick={() => navigate('/admin/delete-history')}
+                  className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
+                >
+                  <svg className="mr-3 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Delete History
+                </button>
+
                 <button
                   onClick={() => navigate('/admin/add-vertical-head')}
                   className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -179,7 +188,7 @@ const GlobalAdminDashboard: React.FC = () => {
                   </svg>
                   Add Vertical Head
                 </button>
-                
+
                 <button
                   onClick={() => navigate('/admin/vertical-attendance')}
                   className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -189,7 +198,7 @@ const GlobalAdminDashboard: React.FC = () => {
                   </svg>
                   Vertical Meetings
                 </button>
-                
+
                 <button
                   onClick={() => navigate('/global-admin/all-attendance')}
                   className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -201,7 +210,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Bottom section with Theme Toggle and Logout - Absolutely positioned */}
             <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4">
               <div className="flex items-center justify-center mb-4">
@@ -221,9 +230,8 @@ const GlobalAdminDashboard: React.FC = () => {
         </div>
 
         {/* Mobile Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
+        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}>
           {/* Header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-slate-800">
             <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">Admin Panel</h1>
@@ -246,7 +254,7 @@ const GlobalAdminDashboard: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           {/* Navigation Menu */}
           <div className="mt-6 px-3 pb-6 overflow-y-auto" style={{ height: 'calc(100vh - 64px - 120px)' }}>
             <div className="space-y-1">
@@ -259,7 +267,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
                 Create Meeting
               </button>
-              
+
               <button
                 onClick={() => navigate('/admin/manage-members')}
                 className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -269,7 +277,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
                 Manage Members
               </button>
-              
+
               <button
                 onClick={() => navigate('/admin/delete-requests')}
                 className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -279,7 +287,17 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
                 Delete Requests
               </button>
-              
+
+              <button
+                onClick={() => navigate('/admin/delete-history')}
+                className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
+              >
+                <svg className="mr-3 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Delete History
+              </button>
+
               <button
                 onClick={() => navigate('/admin/add-vertical-head')}
                 className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -289,7 +307,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
                 Add Vertical Head
               </button>
-              
+
               <button
                 onClick={() => navigate('/admin/vertical-attendance')}
                 className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -299,7 +317,7 @@ const GlobalAdminDashboard: React.FC = () => {
                 </svg>
                 Vertical Meetings
               </button>
-              
+
               <button
                 onClick={() => navigate('/global-admin/all-attendance')}
                 className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-md hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-800 group"
@@ -311,7 +329,7 @@ const GlobalAdminDashboard: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           {/* Bottom section with Theme Toggle and Logout */}
           <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6">
             <div className="flex items-center justify-center mb-4">
@@ -331,7 +349,7 @@ const GlobalAdminDashboard: React.FC = () => {
 
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
