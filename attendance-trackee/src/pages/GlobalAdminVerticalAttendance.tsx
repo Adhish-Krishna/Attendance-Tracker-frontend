@@ -47,7 +47,7 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
       // Fetch all vertical leads to get unique verticals
       const leadsResponse = await globalAdminAPI.getVerticalLeads();
       let leadsData: VerticalLead[] = [];
-      
+
       if (Array.isArray(leadsResponse)) {
         leadsData = leadsResponse;
       } else if (leadsResponse?.vertical_leads && Array.isArray(leadsResponse.vertical_leads)) {
@@ -116,7 +116,7 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
       setLoadingSummary(true);
       setError('');
       const response = await globalAdminAPI.getAllVerticalsAttendanceSummary();
-      
+
       if (response.attendance_summary && Array.isArray(response.attendance_summary)) {
         // Filter summary for selected vertical
         const verticalSummary = response.attendance_summary.filter(
@@ -271,6 +271,9 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {formatDate(meeting.date)}
                         </p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          Created by: {meeting.created_by === 'OB' ? 'OB' : meeting.created_by_roll_no || 'Unknown'}
+                        </p>
                       </div>
                     </div>
                     <div className="mb-4">
@@ -346,13 +349,12 @@ const GlobalAdminVerticalAttendance: React.FC = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                (item.percentage || 0) >= 75 
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${(item.percentage || 0) >= 75
                                   ? 'bg-green-100 dark:bg-green-600/30 text-green-800 dark:text-green-200'
                                   : (item.percentage || 0) >= 50
-                                  ? 'bg-yellow-100 dark:bg-yellow-600/30 text-yellow-800 dark:text-yellow-200'
-                                  : 'bg-red-100 dark:bg-red-600/30 text-red-800 dark:text-red-200'
-                              }`}>
+                                    ? 'bg-yellow-100 dark:bg-yellow-600/30 text-yellow-800 dark:text-yellow-200'
+                                    : 'bg-red-100 dark:bg-red-600/30 text-red-800 dark:text-red-200'
+                                }`}>
                                 {item.percentage != null ? `${item.percentage}%` : 'N/A'}
                               </span>
                             </div>
