@@ -44,6 +44,19 @@ export interface Member {
   role?: 'Vertical Lead' | 'Team Coordinator' | 'Member';
 }
 
+export interface DeletedMember {
+  name: string;
+  roll_no: string;
+  year: number;
+  department: string;
+  vertical: string;
+  role: 'Vertical Lead' | 'Team Coordinator' | 'Member';
+  deleted_at: string;
+  deleted_by_type: 'GlobalAdmin' | 'VerticalLeadRequest';
+  deleted_by_identifier: string;
+  delete_request_id?: string;
+}
+
 export interface MemberAttendance {
   member: Member;
   isPresent: boolean;

@@ -5,29 +5,22 @@ const ATTENDANCE_THRESHOLD = import.meta.env.VITE_ATTENDANCE_THRESHOLD;
 
 // Configure axios instance
 const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true, // Important for JWT cookies
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true, // Important for JWT cookies
 });
 
 // Global Admin APIs
 export const globalAdminAPI = {
-  signup: async (username: string, password: string) => {
-    const response = await api.post('/auth/globaladmin/signup', {
-      username,
-      password
-    });
-    return response.data;
-  },
 
   login: async (username: string, password: string) => {
     const response = await api.post('/auth/globaladmin/login', {
       username,
       password
     });
-  // Removed debug log
+    // Removed debug log
     return response; // Return full response object, not just response.data
   },
 
@@ -42,7 +35,6 @@ export const globalAdminAPI = {
     year: number;
     department: string;
     vertical: string;
-    password: string;
   }) => {
     const response = await api.post('/globaladmin/verticalleads/create', leadData);
     return response.data;
@@ -103,6 +95,11 @@ export const globalAdminAPI = {
 
   reviewDeleteRequest: async (requestId: string, action: 'approve' | 'reject') => {
     const response = await api.put(`/globaladmin/delete-requests/${requestId}`, { action });
+    return response.data;
+  },
+
+  getDeletedMembers: async () => {
+    const response = await api.get('/globaladmin/members/deleted');
     return response.data;
   }
 };
@@ -216,9 +213,9 @@ export const verticalLeadAPI = {
 
   // Request member deletion (creates delete request for global admin)
   requestMemberDeletion: async (roll_no: string, reason?: string) => {
-    const response = await api.post('/verticalleads/delete-requests', { 
+    const response = await api.post('/verticalleads/delete-requests', {
       roll_no,
-      reason 
+      reason
     });
     return response.data;
   },
@@ -284,15 +281,15 @@ api.interceptors.response.use(
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-  // Removed debug error
+      // Removed debug error
       return Promise.reject(error.response.data);
     } else if (error.request) {
       // The request was made but no response was received
-  // Removed debug error
+      // Removed debug error
       return Promise.reject({ error: 'Network error occurred' });
     } else {
       // Something happened in setting up the request that triggered an Error
-  // Removed debug error
+      // Removed debug error
       return Promise.reject({ error: 'Request failed' });
     }
   }
