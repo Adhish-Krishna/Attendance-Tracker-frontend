@@ -23,6 +23,7 @@ export interface Meeting {
   m_o_m?: string;
   vertical?: string;
   created_by?: string;
+  created_by_roll_no?: string;  // Roll number of the vertical lead who created the meeting (null if created by OB)
   created_at?: string;
   updated_at?: string;
 }
