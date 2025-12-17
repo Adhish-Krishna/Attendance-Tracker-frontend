@@ -241,7 +241,7 @@ const VerticalHeadDashboard: React.FC = () => {
                       {formatDate(meeting.date)}
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                      Created by: {meeting.created_by === 'OB' ? 'OB' : meeting.created_by_roll_no || 'Unknown'}
+                      Created by: {meeting.created_by === 'OB' ? 'OB' : `${meeting.created_by_name || 'Unknown'}${meeting.created_by_roll_no ? ` (${meeting.created_by_roll_no})` : ''}`}
                     </p>
                     <div className="mt-3">
                       <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
